@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MARAVILLA BAY — open-world crime in a port city</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1410;
+    font-family: 'Trebuchet MS', Verdana, sans-serif; color: #f2ead8; }
+  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .panel { position: fixed; z-index: 5; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+  #hud-tl { top: 14px; left: 14px; }
+  #health-bar { width: 210px; height: 14px; background: rgba(0,0,0,.55); border: 1px solid #f2ead8; border-radius: 3px; overflow: hidden; }
+  #health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #3eff7a, #a8e8c0); }
+  #health-text { font-size: 12px; margin-top: 2px; }
+  #cash { font-size: 26px; font-weight: bold; color: #7dff9a; margin-top: 6px; }
+  #respect { font-size: 13px; color: #ffd23e; }
+  #hud-tr { top: 14px; right: 14px; text-align: right; }
+  #stars { font-size: 26px; letter-spacing: 3px; color: #ffd23e; }
+  #stars.hot { color: #ff5040; }
+  #clock { font-size: 15px; }
+  #district { font-size: 13px; color: #ffd9a0; }
+  #objective { top: 14px; left: 50%; transform: translateX(-50%); text-align: center;
+    background: rgba(0,0,0,.55); padding: 8px 18px; border-radius: 4px; font-size: 15px; max-width: 46vw; }
+  #hud-br { bottom: 14px; right: 14px; text-align: right; }
+  #minimap { width: 190px; height: 190px; border-radius: 50%; border: 2px solid rgba(242,234,216,.85);
+    background: #20242c; display: block; margin-left: auto; }
+  #speedo { display: none; margin-top: 8px; font-size: 15px; }
+  #speed-val { font-size: 34px; font-weight: bold; }
+  #ammo { font-size: 15px; margin-top: 4px; color: #ffd23e; }
+  #radio { font-size: 12px; color: #9fc4ff; margin-top: 2px; }
+  #hint { bottom: 14px; left: 14px; font-size: 13px; background: rgba(0,0,0,.5);
+    padding: 6px 10px; border-radius: 4px; }
+  #crosshair { position: fixed; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+    z-index: 5; display: none; pointer-events: none; }
+  #crosshair::before, #crosshair::after { content: ''; position: absolute; background: #fff; }
+  #crosshair::before { left: 10px; top: 0; width: 2px; height: 22px; }
+  #crosshair::after { top: 10px; left: 0; height: 2px; width: 22px; }
+  #toast { position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%); z-index: 6;
+    background: rgba(0,0,0,.7); padding: 10px 20px; border-radius: 4px; font-size: 15px;
+    opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 80vw; text-align: center; }
+  #toast.show { opacity: 1; }
+  #mission-card { position: fixed; left: 50%; top: 22%; transform: translateX(-50%); z-index: 6;
+    text-align: center; opacity: 0; transition: opacity .4s; pointer-events: none; }
+  #mission-card.show { opacity: 1; }
+  #mission-title { font-size: 34px; font-weight: bold; color: #ffd23e; text-shadow: 0 2px 8px #000; }
+  #mission-brief { font-size: 16px; margin-top: 6px; text-shadow: 0 1px 4px #000; max-width: 560px; }
+  .screen { position: fixed; inset: 0; z-index: 10; display: none; align-items: center; justify-content: center;
+    flex-direction: column; background: rgba(10,8,6,.82); text-align: center; padding: 20px; }
+  .screen h1 { font-size: 52px; margin: 0; color: #ffd23e; letter-spacing: 4px; }
+  .screen h2 { font-size: 22px; margin: 4px 0 18px; color: #f2ead8; font-weight: normal; }
+  .screen p { max-width: 620px; line-height: 1.55; font-size: 15px; }
+  .screen button { pointer-events: auto; display: block; margin: 8px auto; padding: 12px 34px;
+    font-size: 17px; font-family: inherit; background: #c23b2e; color: #fff; border: none;
+    border-radius: 4px; cursor: pointer; min-width: 280px; }
+  .screen button:hover { background: #e04a38; }
+  .screen button:disabled { background: #555; cursor: default; }
+  .screen button.alt { background: #2e6f8e; }
+  .screen button.alt:hover { background: #3a86ab; }
+  .controls { font-size: 13px; line-height: 1.8; color: #d8c9a3; margin-top: 14px; }
+  .settings-row { margin: 10px auto; font-size: 14px; }
+  .settings-row label { margin-right: 8px; }
+  #garage-list { max-width: 560px; text-align: left; }
+  .garage-item { background: rgba(255,255,255,.07); padding: 10px 14px; margin: 6px 0; border-radius: 4px; font-size: 15px; }
+  .garage-item button { display: inline-block; margin: 0 0 0 10px; padding: 6px 16px; min-width: 0; font-size: 14px; }
+</style>
+</head>
+<body>
+<canvas id="game" aria-label="Maravilla Bay: open-world crime game. Drive, steal cars, outrun the police, finish eight story missions."></canvas>
+<p id="status" role="status" aria-live="polite"></p>
+
+<div class="panel" id="hud-tl">
+  <div id="health-bar"><div id="health-fill"></div></div>
+  <div id="health-text">100</div>
+  <div id="cash">$200</div>
+  <div id="respect">Respect 0</div>
+</div>
+<div class="panel" id="hud-tr">
+  <div id="stars">☆☆☆☆☆</div>
+  <div id="clock">Day 1 17:20</div>
+  <div id="district">Old Town</div>
+</div>
+<div class="panel" id="objective">Welcome to Maravilla Bay</div>
+<div class="panel" id="hud-br">
+  <canvas id="minimap" width="190" height="190"></canvas>
+  <div id="speedo"><span id="speed-val">0</span> km/h</div>
+  <div id="ammo"></div>
+  <div id="radio">Coastal Pop 98.1</div>
+</div>
+<div class="panel" id="hint"></div>
+<div id="crosshair"></div>
+<div id="toast"></div>
+<div id="mission-card"><div id="mission-title"></div><div id="mission-brief"></div></div>
+
+<div class="screen" id="title-screen">
+  <h1>MARAVILLA BAY</h1>
+  <h2>Sun-soaked open-world crime in a port city</h2>
+  <p>Mara Voss is back after three years away. Her brother Tomas runs a struggling
+  garage, and a fixer called Ines Delgado has one last job chain for her — eight
+  missions building to a heist across the old causeway before the city floods it
+  for good. Steal cars, outrun the police, mind the helicopter.</p>
+  <button id="btn-new">New Game</button>
+  <button id="btn-continue" class="alt">Continue</button>
+  <div class="controls">WASD move / drive &nbsp;·&nbsp; Mouse orbit &nbsp;·&nbsp; Shift sprint / nitro
+  &nbsp;·&nbsp; Space jump / handbrake &nbsp;·&nbsp; E enter car &nbsp;·&nbsp; F punch &nbsp;·&nbsp; R fire / radio
+  &nbsp;·&nbsp; H honk &nbsp;·&nbsp; Esc pause</div>
+</div>
+
+<div class="screen" id="pause-screen">
+  <h1>PAUSED</h1>
+  <button id="btn-resume">Resume</button>
+  <button id="btn-save" class="alt">Save game</button>
+  <button id="btn-load" class="alt">Load game</button>
+  <div class="settings-row"><label>Volume <input id="set-volume" type="range" min="0" max="1" step="0.05" value="0.7"></label></div>
+  <div class="settings-row"><label>Mouse sensitivity <input id="set-sens" type="range" min="0.5" max="2" step="0.1" value="1"></label></div>
+  <div class="settings-row"><label>Graphics <select id="set-quality"><option value="high">High</option><option value="low">Low</option></select></label></div>
+  <button id="btn-quit" class="alt">Quit to title</button>
+</div>
+
+<div class="screen" id="busted-screen">
+  <h1>BUSTED</h1>
+  <p id="busted-lost"></p>
+  <button id="btn-busted-ok">Back on the streets</button>
+</div>
+
+<div class="screen" id="garage-screen">
+  <h1>TOMAS'S GARAGE</h1>
+  <div id="garage-list"></div>
+  <button id="btn-garage-close" class="alt">Leave the garage</button>
+</div>
+
+<script src="./vendor/three.min.js"></script>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
