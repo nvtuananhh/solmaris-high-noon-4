@@ -40,15 +40,15 @@ export function stageShot(world, mode) {
   }
 
   if (mode === 'onfoot') {
-    // Mara on foot in Mercado Quarter: diagonal view down the sidewalk
-    // so storefronts, the avenue and pedestrians share the frame.
+    // Mara on foot on the Mercado sidewalk, looking north up the avenue:
+    // road on the left, storefronts on the right, pedestrians ahead.
     world.startMission(0);
-    world.teleport(60, 9.5);
-    s.player.heading = Math.PI * 1.75; // south-west, down the sidewalk
-    s.camYaw = Math.PI * 1.75;
-    s.camPitch = 0.32;
+    world.teleport(9.5, 5);
+    s.player.heading = Math.PI; // north, along the sidewalk
+    s.camYaw = Math.PI;
+    s.camPitch = 0.38;
     s.clockMinutes = 17 * 60 + 20;
-    world.gatherPeds([[48, 4], [54, 14], [44, 16], [58, 2]]);
+    world.gatherPeds([[-9.5, -8], [9.5, -18], [-9.5, -12], [-9.5, -2], [3, -14], [-3, -20]]);
     input.testDown('KeyW'); // stroll forward
     return { holdKeys: ['KeyW'] };
   }
@@ -78,7 +78,7 @@ export function stageShot(world, mode) {
     s.camPitch = 0.3;
     s.clockMinutes = 18 * 60 + 5;
     world.giveWeapon('pistol', 24);
-    world.spawnWitness(344, -98);
+    world.spawnWitness(342, -112);
     // jump to the combat step and spawn the crew
     world.missions.stepIndex = 1;
     world.missions.foesLeft = 4;
