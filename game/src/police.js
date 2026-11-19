@@ -207,11 +207,15 @@ export function createPolice(scene, rng) {
       }
       // --- roadblocks at 3+ stars, re-laid ahead as the player moves ---
       if (wanted >= 3) {
-        let nearestBlock = 1e9;
+        // a block counts only while it is still ahead of the player;
+        // once the player has passed them all, lay a fresh set ahead
+        const fx = Math.sin(playerHeading), fz = Math.cos(playerHeading);
+        let anyAhead = false;
         for (const c of roadblocks) {
-          nearestBlock = Math.min(nearestBlock, Math.hypot(c.pos.x - playerPos.x, c.pos.z - playerPos.z));
+          const dx = c.pos.x - playerPos.x, dz = c.pos.z - playerPos.z;
+          if (dx * fx + dz * fz > 10 && Math.hypot(dx, dz) < 140) { anyAhead = true; break; }
         }
-        if (roadblocks.length === 0 || nearestBlock > 130) {
+        if (!anyAhead) {
           placeRoadblocks(playerPos.x, playerPos.z, playerHeading);
         }
       } else if (roadblocks.length > 0) {
