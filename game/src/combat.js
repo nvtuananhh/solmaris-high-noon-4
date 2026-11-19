@@ -38,7 +38,7 @@ export function createCombat(scene, rng, ctx) {
 
   // muzzle flash: a small additive sprite shown for one step after a shot
   const flash = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 8, 6),
+    new THREE.SphereGeometry(0.32, 8, 6),
     new THREE.MeshBasicMaterial({ color: 0xffe9a8, transparent: true, opacity: 0 })
   );
   scene.add(flash);
@@ -105,8 +105,8 @@ export function createCombat(scene, rng, ctx) {
       ctx.audio.gunshot();
       const p = ctx.playerPos();
       const h = ctx.playerHeading();
-      flash.position.set(p.x + Math.sin(h) * 1.4, 1.5, p.z + Math.cos(h) * 1.4);
-      flash.material.opacity = 0.95;
+      flash.position.set(p.x + Math.sin(h) * 1.4, 1.35, p.z + Math.cos(h) * 1.4);
+      flash.material.opacity = 0.8;
       flashAt = ctx.state.clock;
       ctx.onShotFired({ x: p.x, z: p.z });
       let best = null, bestD = 45;

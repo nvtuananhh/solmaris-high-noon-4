@@ -117,6 +117,22 @@ export function createWorld(opts) {
   tomas.rotation.y = Math.PI;
   scene.add(tomas);
 
+  // The mission-6 witness: a static figure in a yellow jacket who waits
+  // where the staging puts them.
+  const witnesses = [];
+  function spawnWitness(x, z) {
+    const w = buildPedMesh(rng);
+    w.children[0].material = new THREE.MeshLambertMaterial({ color: 0xe8c832 });
+    w.position.set(x, 0, z);
+    w.rotation.y = Math.PI * 0.75;
+    // crouched, hands up: shrink a little and tilt forward
+    w.scale.setScalar(0.92);
+    w.rotation.x = 0.25;
+    scene.add(w);
+    witnesses.push(w);
+    return w;
+  }
+
   let missions;
   let combat;
   const notify = (msg) => hud.showToast(msg);
@@ -676,6 +692,7 @@ export function createWorld(opts) {
     giveRespect(n) { state.respect += n; },
     giveWeapon(w, ammo) { state.weapon = w; state.ammo = ammo; },
     hurt(n) { damagePlayer(n); },
+    spawnWitness,
     snapCamera() {
       const target = state.inCar
         ? { x: state.inCar.pos.x, y: 1, z: state.inCar.pos.z }

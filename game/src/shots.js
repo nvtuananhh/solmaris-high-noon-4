@@ -31,7 +31,7 @@ export function stageShot(world, mode) {
     world.teleport(0, 120);
     s.player.heading = 0; // south, down the avenue toward the marina
     s.camYaw = 0;
-    s.camPitch = 0.12;
+    s.camPitch = 0.08;
     s.clockMinutes = 17 * 60 + 45;
     world.tryEnterCarAt(0, 120);
     world.setWanted(4);
@@ -40,11 +40,12 @@ export function stageShot(world, mode) {
   }
 
   if (mode === 'onfoot') {
-    // Mara on foot in Mercado Quarter among pedestrians and storefronts.
+    // Mara on foot on the Mercado sidewalk, storefronts on one side,
+    // road and pedestrians on the other.
     world.startMission(0);
-    world.teleport(50, 50);
-    s.player.heading = Math.PI * 0.75;
-    s.camYaw = Math.PI * 0.75;
+    world.teleport(50, 9.5);
+    s.player.heading = Math.PI / 2; // east, along the sidewalk
+    s.camYaw = Math.PI / 2;
     s.camPitch = 0.32;
     s.clockMinutes = 17 * 60 + 20;
     input.testDown('KeyW'); // stroll forward
@@ -66,14 +67,16 @@ export function stageShot(world, mode) {
 
   if (mode === 'mission') {
     // Mission 6 rooftop combat: witness, rival crew, pistol out.
+    // Face north-west so the Hillcrest tower fills the background.
     world.giveRespect(40);
     world.startMission(5); // mission 6 (index 5)
     world.teleport(350, -128);
-    s.player.heading = Math.PI * 0.25;
-    s.camYaw = Math.PI * 0.25;
+    s.player.heading = Math.PI * 1.25;
+    s.camYaw = Math.PI * 1.25;
     s.camPitch = 0.3;
     s.clockMinutes = 18 * 60 + 5;
     world.giveWeapon('pistol', 24);
+    world.spawnWitness(346, -136);
     // jump to the combat step and spawn the crew
     world.missions.stepIndex = 1;
     world.missions.foesLeft = 4;

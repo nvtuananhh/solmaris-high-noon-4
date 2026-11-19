@@ -196,18 +196,24 @@ export function createPolice(scene, rng) {
       }
       if (heli.active) {
         heli.angle += dt * 0.9;
-        // low (20) and wide (18) orbit: the helicopter stays in the
+        // low (16) and wide (22) orbit: the helicopter stays in the
         // third-person frame ahead of the player instead of hiding overhead
-        heli.pos.x = playerPos.x + Math.sin(heli.angle) * 18;
-        heli.pos.z = playerPos.z + Math.cos(heli.angle) * 18;
-        heli.mesh.position.set(heli.pos.x, 20, heli.pos.z);
+        heli.pos.x = playerPos.x + Math.sin(heli.angle) * 22;
+        heli.pos.z = playerPos.z + Math.cos(heli.angle) * 22;
+        heli.mesh.position.set(heli.pos.x, 16, heli.pos.z);
         heli.mesh.rotation.y = Math.atan2(playerPos.x - heli.pos.x, playerPos.z - heli.pos.z);
         heli.mesh.userData.rotor.rotation.y += dt * 22;
         heli.mesh.userData.rotor2.rotation.y += dt * 22;
       }
-      // --- roadblocks at 3+ stars, re-laid as the player moves ---
+      // --- roadblocks at 3+ stars, re-laid ahead as the player moves ---
       if (wanted >= 3) {
-        if (roadblocks.length === 0) placeRoadblocks(playerPos.x, playerPos.z, playerHeading);
+        let nearestBlock = 1e9;
+        for (const c of roadblocks) {
+          nearestBlock = Math.min(nearestBlock, Math.hypot(c.pos.x - playerPos.x, c.pos.z - playerPos.z));
+        }
+        if (roadblocks.length === 0 || nearestBlock > 130) {
+          placeRoadblocks(playerPos.x, playerPos.z, playerHeading);
+        }
       } else if (roadblocks.length > 0) {
         clearRoadblocks();
       }
