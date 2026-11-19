@@ -53,7 +53,7 @@ export function createWorld(opts) {
     punchCooldown: 0,
     shotCooldown: 0,
     wanted: 0,
-    player: { x: -350, z: -330, y: 0, vy: 0, heading: Math.PI, onGround: true },
+    player: { x: -350, z: -300, y: 0, vy: 0, heading: Math.PI, onGround: true },
     inCar: null,
     camYaw: Math.PI,
     camPitch: 0.32,
@@ -308,7 +308,7 @@ export function createWorld(opts) {
     state.weapon = 'fists';
     state.ammo = 0;
     state.player.x = -350;
-    state.player.z = -330;
+    state.player.z = -300;
     state.player.heading = Math.PI;
     state.camYaw = Math.PI;
     state.inCar = null;
