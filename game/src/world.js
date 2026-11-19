@@ -407,22 +407,23 @@ export function createWorld(opts) {
         state.player.onGround = true;
       }
     }
-    // interactions
+    // interactions: nearest thing wins — a car at your elbow beats the
+    // garage door behind it, so try the car first, then the buildings.
     if (input.hit('KeyE')) {
-      if (near(GARAGE_POS.x, GARAGE_POS.z, 14)) { openGarage(); return; }
-      if (near(SAFEHOUSE_POS.x, SAFEHOUSE_POS.z, 10)) {
-        if (state.wanted > 0 && state.cash >= CFG.wanted.payoffCost) {
-          state.cash -= CFG.wanted.payoffCost;
-          police.clearWanted();
-          notify(`Wanted level paid off — $${CFG.wanted.payoffCost}.`);
-        } else if (state.wanted > 0) {
-          notify('Payoff costs $250 — not enough cash.');
-        } else {
-          notify('Safehouse: nobody is looking for you right now.');
-        }
-        return;
-      }
       if (!tryEnterCar()) {
+        if (near(GARAGE_POS.x, GARAGE_POS.z, 14)) { openGarage(); return; }
+        if (near(SAFEHOUSE_POS.x, SAFEHOUSE_POS.z, 10)) {
+          if (state.wanted > 0 && state.cash >= CFG.wanted.payoffCost) {
+            state.cash -= CFG.wanted.payoffCost;
+            police.clearWanted();
+            notify(`Wanted level paid off — $${CFG.wanted.payoffCost}.`);
+          } else if (state.wanted > 0) {
+            notify('Payoff costs $250 — not enough cash.');
+          } else {
+            notify('Safehouse: nobody is looking for you right now.');
+          }
+          return;
+        }
         // taxi hail: wave down a fare if a customer is near
         const ped = peds.nearest(state.player.x, state.player.z, 6);
         if (ped && ped.isTaxi && ped.state === 'walk') {
@@ -511,6 +512,12 @@ export function createWorld(opts) {
     // otherwise swallow it, since the loop stops stepping while paused).
     if (state.mode === 'paused' && input.hit('Escape')) {
       togglePause();
+      input.clearPressed();
+      return;
+    }
+    if (state.mode === 'garage' && input.hit('Escape')) {
+      hud.hideGarage();
+      state.mode = 'playing';
       input.clearPressed();
       return;
     }
@@ -668,6 +675,7 @@ export function createWorld(opts) {
     giveCash(n) { state.cash += n; },
     giveRespect(n) { state.respect += n; },
     giveWeapon(w, ammo) { state.weapon = w; state.ammo = ammo; },
+    hurt(n) { damagePlayer(n); },
     snapCamera() {
       const target = state.inCar
         ? { x: state.inCar.pos.x, y: 1, z: state.inCar.pos.z }

@@ -111,6 +111,7 @@ window.__maravilla = {
   giveCash: (n) => world.giveCash(n),
   giveRespect: (n) => world.giveRespect(n),
   giveWeapon: (w, a) => world.giveWeapon(w, a),
+  hurt: (n) => world.hurt(n),
   togglePause: () => world.togglePause(),
   keyDown: (code) => world.input.testDown(code),
   keyUp: (code) => world.input.testUp(code),
