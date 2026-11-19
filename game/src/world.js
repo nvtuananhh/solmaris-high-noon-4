@@ -693,6 +693,16 @@ export function createWorld(opts) {
     giveWeapon(w, ammo) { state.weapon = w; state.ammo = ammo; },
     hurt(n) { damagePlayer(n); },
     spawnWitness,
+    // Shot staging: move the first few walking pedestrians to fixed spots
+    // so a frame can guarantee a crowd (deterministic: array order).
+    gatherPeds(spots) {
+      const walking = peds.peds.filter((p) => p.state === 'walk');
+      for (let i = 0; i < Math.min(spots.length, walking.length); i++) {
+        walking[i].pos.x = spots[i][0];
+        walking[i].pos.z = spots[i][1];
+        walking[i].heading = Math.PI * (0.2 + i * 0.35);
+      }
+    },
     snapCamera() {
       const target = state.inCar
         ? { x: state.inCar.pos.x, y: 1, z: state.inCar.pos.z }

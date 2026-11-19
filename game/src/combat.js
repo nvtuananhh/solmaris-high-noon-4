@@ -105,7 +105,13 @@ export function createCombat(scene, rng, ctx) {
       ctx.audio.gunshot();
       const p = ctx.playerPos();
       const h = ctx.playerHeading();
-      flash.position.set(p.x + Math.sin(h) * 1.4, 1.35, p.z + Math.cos(h) * 1.4);
+      // flash sits at the gun, off to the player's right, so it reads as
+      // a muzzle flash instead of a halo over the head
+      flash.position.set(
+        p.x + Math.sin(h) * 1.4 + Math.cos(h) * 0.7,
+        1.35,
+        p.z + Math.cos(h) * 1.4 - Math.sin(h) * 0.7
+      );
       flash.material.opacity = 0.8;
       flashAt = ctx.state.clock;
       ctx.onShotFired({ x: p.x, z: p.z });
