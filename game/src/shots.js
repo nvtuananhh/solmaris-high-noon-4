@@ -31,7 +31,7 @@ export function stageShot(world, mode) {
     world.teleport(0, 120);
     s.player.heading = 0; // south, down the avenue toward the marina
     s.camYaw = 0;
-    s.camPitch = 0.3;
+    s.camPitch = 0.12;
     s.clockMinutes = 17 * 60 + 45;
     world.tryEnterCarAt(0, 120);
     world.setWanted(4);
@@ -68,7 +68,7 @@ export function stageShot(world, mode) {
     // Mission 6 rooftop combat: witness, rival crew, pistol out.
     world.giveRespect(40);
     world.startMission(5); // mission 6 (index 5)
-    world.teleport(350, -150);
+    world.teleport(350, -128);
     s.player.heading = Math.PI * 0.25;
     s.camYaw = Math.PI * 0.25;
     s.camPitch = 0.3;
@@ -77,7 +77,7 @@ export function stageShot(world, mode) {
     // jump to the combat step and spawn the crew
     world.missions.stepIndex = 1;
     world.missions.foesLeft = 4;
-    world.combat.spawnFoes(350, -150, 4);
+    world.combat.spawnFoes(350, -120, 4);
     return { holdKeys: [] };
   }
 
@@ -90,6 +90,12 @@ export function runShot(world, mode) {
   const staged = stageShot(world, mode);
   const steps = SHOT_STEPS[mode] ?? 120;
   for (let i = 0; i < steps; i++) {
+    world.update(CFG.step);
+  }
+  if (mode === 'cover') {
+    // swing the helicopter to the front of the frame, then settle it
+    world.police.heli.angle = world.state.camYaw;
+    world.update(CFG.step);
     world.update(CFG.step);
   }
   if (mode === 'mission') {

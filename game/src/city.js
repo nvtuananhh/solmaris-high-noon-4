@@ -92,7 +92,7 @@ export function buildCity(scene, rng) {
   sand.receiveShadow = true;
   group.add(sand);
 
-  const slab = new THREE.Mesh(new THREE.PlaneGeometry(1240, 1240), lambert(0x8f8a80));
+  const slab = new THREE.Mesh(new THREE.PlaneGeometry(1240, 1240), lambert(0x7d7870));
   slab.rotation.x = -Math.PI / 2; slab.position.set(0, 0, -20);
   slab.receiveShadow = true;
   group.add(slab);
@@ -134,7 +134,21 @@ export function buildCity(scene, rng) {
   const palette = ['#b5763f', '#c9a24a', '#7a8ba0', '#a85a4a', '#5f7a5a', '#8e6a8e', '#d8c9a3', '#4a6d8e'];
   const facades = palette.map((c) => facadeTexture(rng, c, 0.35));
 
-  // --- buildings, one per block cell, skipped on water / special plots ---
+  // --- block ground: one tinted plane per block so interiors are not bare slab ---
+  const groundPalette = [0x9a8f7a, 0x7a8a5a, 0x8a7a6a, 0xa89a7a, 0x6d7a5a, 0x948a72];
+  const groundGeo = new THREE.PlaneGeometry(78, 78);
+  const groundMats = groundPalette.map((c) => lambert(c));
+  for (let bx = -500; bx <= 500; bx += CFG.blockPitch) {
+    for (let bz = -500; bz <= 400; bz += CFG.blockPitch) {
+      const cx = bx + 50, cz = bz + 50;
+      if (cz > 480) continue;
+      const gp = new THREE.Mesh(groundGeo, pick(rng, groundMats));
+      gp.rotation.x = -Math.PI / 2;
+      gp.position.set(cx, 0.015, cz);
+      gp.receiveShadow = true;
+      group.add(gp);
+    }
+  }
   const special = [
     { x: -350, z: -350, r: 60 }, // Tomas's garage
     { x: 150, z: -450, r: 55 }, // police station
@@ -191,7 +205,23 @@ export function buildCity(scene, rng) {
     }
   }
 
-  // --- special plots: garage, police station, chop shop, safehouse ---
+  // --- bushes inside blocks, kept clear of building footprints ---
+  const bushGeo = new THREE.SphereGeometry(1.4, 8, 6);
+  const bushMat = lambert(0x3e6e35);
+  for (let i = 0; i < 90; i++) {
+    const bx = -550 + rng() * 1100;
+    const bz = -550 + rng() * 1000;
+    let inside = false;
+    for (const c of colliders) {
+      if (bx > c.minX - 2 && bx < c.maxX + 2 && bz > c.minZ - 2 && bz < c.maxZ + 2) { inside = true; break; }
+    }
+    if (inside || isOnRoad(bx, bz) || bz > 500) continue;
+    const bush = new THREE.Mesh(bushGeo, bushMat);
+    bush.scale.set(1 + rng() * 0.8, 0.6 + rng() * 0.3, 1 + rng() * 0.8);
+    bush.position.set(bx, 0.7, bz);
+    bush.castShadow = true;
+    group.add(bush);
+  }
   function plot(x, z, w, d, h, color, label, labelColor) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), lambert(color));
     m.position.set(x, h / 2, z);
@@ -216,7 +246,7 @@ export function buildCity(scene, rng) {
 
   // --- palms along the marina strip and beach ---
   const trunkGeo = new THREE.CylinderGeometry(0.35, 0.55, 9, 6);
-  const crownGeo = new THREE.ConeGeometry(3.2, 4.5, 6);
+  const crownGeo = new THREE.ConeGeometry(4.4, 3.4, 6); // wide flat crown, not a cone tree
   const trunkMat = lambert(0x7a5a3a);
   const crownMat = lambert(0x2e7a3a);
   for (let i = 0; i < 70; i++) {

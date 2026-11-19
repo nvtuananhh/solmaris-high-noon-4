@@ -48,8 +48,12 @@ export function createMissions(scene, rng, ctx) {
   coinGeo.rotateX(Math.PI / 2);
   const coinMat = new THREE.MeshBasicMaterial({ color: 0xffd23e });
   for (let i = 0; i < CFG.coinCount; i++) {
-    const x = range(rng, -520, 520);
-    const z = range(rng, -520, 480);
+    let x = 0, z = 0, tries = 0;
+    do {
+      x = range(rng, -520, 520);
+      z = range(rng, -520, 480);
+      tries++;
+    } while (ctx.blocked(x, z) && tries < 40);
     if (ctx.blocked(x, z)) continue;
     const m = new THREE.Mesh(coinGeo, coinMat);
     m.position.set(x, 1.4, z);

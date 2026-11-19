@@ -93,20 +93,29 @@ export function createWorld(opts) {
     parkedCars.push(car);
     return car;
   }
-  parkCar(0, 0x3f6fb5, -350, -330, Math.PI / 2); // mission 1 sedan at the garage
-  parkCar(2, 0xe8e4da, -150, -150, 0); // mission 2 steal target
-  parkCar(1, 0xc23b2e, 50, -350, Math.PI); // mission 5 getaway car
-  parkCar(3, 0x2e6f8e, -420, 250, Math.PI / 2); // mission 7 dock car
-  parkCar(4, 0xd8d832, -250, 250, 0); // mission 8 score car
+  // Parked cars sit ON avenues (never inside a block) so the player can
+  // always reach and drive them. Mission cars match the mission markers.
+  parkCar(0, 0x3f6fb5, -360, -330, Math.PI / 2); // mission 1 sedan at the garage
+  parkCar(2, 0xe8e4da, -103, -150, 0); // mission 2 steal target
+  parkCar(1, 0xc23b2e, 50, -403, Math.PI); // mission 5 getaway car
+  parkCar(3, 0x2e6f8e, -403, 250, Math.PI / 2); // mission 7 dock car
+  parkCar(4, 0xd8d832, -250, 200, 0); // mission 8 score car
   parkCar(0, 0x8a8f96, 0, 440, Math.PI);
-  parkCar(1, 0xe8c832, 100, -50, Math.PI / 2);
-  parkCar(3, 0xb5651d, -50, 150, 0);
+  parkCar(1, 0xe8c832, 103, -50, Math.PI / 2);
+  parkCar(3, 0xb5651d, -50, 100, 0);
   parkCar(4, 0x18a058, 300, 300, -Math.PI / 2);
-  parkCar(2, 0x4a7a5a, -250, 50, Math.PI);
+  parkCar(2, 0x4a7a5a, -200, 50, Math.PI);
   parkCar(0, 0xb5b0a6, 200, 200, 0);
   parkCar(1, 0x22242a, -100, -250, Math.PI / 2);
   parkCar(4, 0xd8d832, 0, 120, 0); // cover-shot chase car
   parkCar(1, 0xc23b2e, 0, 458, Math.PI); // driving-shot marina car
+
+  // Tomas waits by the garage doors for mission 1 (static figure).
+  const tomas = buildPedMesh(rng);
+  tomas.children[0].material = new THREE.MeshLambertMaterial({ color: 0x2e7a5a });
+  tomas.position.set(-344, 0, -328);
+  tomas.rotation.y = Math.PI;
+  scene.add(tomas);
 
   let missions;
   let combat;
@@ -498,6 +507,13 @@ export function createWorld(opts) {
   }
 
   function update(dt) {
+    // Escape must work even while paused (the early return below would
+    // otherwise swallow it, since the loop stops stepping while paused).
+    if (state.mode === 'paused' && input.hit('Escape')) {
+      togglePause();
+      input.clearPressed();
+      return;
+    }
     if (state.mode === 'title' || state.mode === 'paused' || state.mode === 'busted') {
       input.clearPressed();
       return;

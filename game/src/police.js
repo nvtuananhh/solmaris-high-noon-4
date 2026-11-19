@@ -35,12 +35,12 @@ function buildHeliMesh() {
   skidL.position.set(-0.9, -1, 0);
   const skidR = skidL.clone();
   skidR.position.x = 0.9;
-  // searchlight: a cone of light pointing down
-  const coneGeo = new THREE.ConeGeometry(5, 26, 16, 1, true);
+  // searchlight: a cone of light pointing down (tip just reaches the street)
+  const coneGeo = new THREE.ConeGeometry(4.5, 20, 16, 1, true);
   const cone = new THREE.Mesh(coneGeo, new THREE.MeshBasicMaterial({
     color: 0xfff2b0, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false,
   }));
-  cone.position.y = -13.5;
+  cone.position.y = -10.5;
   cone.rotation.x = Math.PI;
   const spot = new THREE.SpotLight(0xfff2b0, 1.2, 60, 0.32, 0.5, 1);
   spot.position.set(0, -0.8, 0);
@@ -196,9 +196,11 @@ export function createPolice(scene, rng) {
       }
       if (heli.active) {
         heli.angle += dt * 0.9;
-        heli.pos.x = playerPos.x + Math.sin(heli.angle) * 7;
-        heli.pos.z = playerPos.z + Math.cos(heli.angle) * 7;
-        heli.mesh.position.set(heli.pos.x, 34, heli.pos.z);
+        // low (20) and wide (18) orbit: the helicopter stays in the
+        // third-person frame ahead of the player instead of hiding overhead
+        heli.pos.x = playerPos.x + Math.sin(heli.angle) * 18;
+        heli.pos.z = playerPos.z + Math.cos(heli.angle) * 18;
+        heli.mesh.position.set(heli.pos.x, 20, heli.pos.z);
         heli.mesh.rotation.y = Math.atan2(playerPos.x - heli.pos.x, playerPos.z - heli.pos.z);
         heli.mesh.userData.rotor.rotation.y += dt * 22;
         heli.mesh.userData.rotor2.rotation.y += dt * 22;

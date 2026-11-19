@@ -100,8 +100,8 @@ export const MISSIONS = [
   {
     id: 1, name: 'Homecoming', briefing: 'Meet Tomas at the garage, then drive the sedan down to the marina.',
     steps: [
-      { kind: 'goto', label: 'Meet Tomas at the garage', x: -350, z: -350, r: 6 },
-      { kind: 'enter-car', label: 'Get in the sedan', x: -350, z: -350, r: 8 },
+      { kind: 'goto', label: 'Meet Tomas at the garage', x: -350, z: -328, r: 6 },
+      { kind: 'enter-car', label: 'Get in the sedan', x: -350, z: -330, r: 8 },
       { kind: 'drive-to', label: 'Drive to the marina', x: 0, z: 460, r: 10 },
     ],
     payout: 150, respect: 5,
@@ -109,8 +109,8 @@ export const MISSIONS = [
   {
     id: 2, name: 'Borrowed Wheels', briefing: 'Lift a parked car and deliver it to the chop shop. Lose the tail.',
     steps: [
-      { kind: 'steal-parked', label: 'Steal a parked car', x: -150, z: -150, r: 12 },
-      { kind: 'drive-to', label: 'Deliver it to the chop shop', x: -420, z: 180, r: 10, wanted: 1 },
+      { kind: 'steal-parked', label: 'Steal a parked car', x: -103, z: -150, r: 12 },
+      { kind: 'drive-to', label: 'Deliver it to the chop shop', x: -420, z: 205, r: 10, wanted: 1 },
     ],
     payout: 300, respect: 5,
   },
@@ -118,16 +118,16 @@ export const MISSIONS = [
     id: 3, name: 'The Marina Job', briefing: 'Pick up the package under the pier, then lose the foot pursuit through the Mercado.',
     steps: [
       { kind: 'goto', label: 'Pick up the package under the pier', x: 60, z: 500, r: 6 },
-      { kind: 'goto', label: 'Cut through Mercado Quarter on foot', x: 50, z: 50, r: 8, wanted: 2 },
-      { kind: 'drive-to', label: 'Escape by car to the wharf', x: 420, z: 460, r: 10 },
+      { kind: 'goto', label: 'Cut through Mercado Quarter on foot', x: 0, z: 50, r: 8, wanted: 2 },
+      { kind: 'drive-to', label: 'Escape by car to the wharf', x: 400, z: 460, r: 10 },
     ],
     payout: 450, respect: 8,
   },
   {
     id: 4, name: 'Hot Plates', briefing: 'Swap the plates at the garage while a patrol circles. Stay out of sight.',
     steps: [
-      { kind: 'goto', label: 'Reach the garage on foot', x: -350, z: -350, r: 6 },
-      { kind: 'wait-hidden', label: 'Swap the plates — stay hidden (8s)', x: -350, z: -350, r: 6, hold: 8 },
+      { kind: 'goto', label: 'Reach the garage on foot', x: -350, z: -328, r: 6 },
+      { kind: 'wait-hidden', label: 'Swap the plates — stay hidden (8s)', x: -350, z: -328, r: 6, hold: 8 },
       { kind: 'goto', label: 'Slip away to the market', x: -50, z: -50, r: 8 },
     ],
     payout: 400, respect: 6,
@@ -135,17 +135,17 @@ export const MISSIONS = [
   {
     id: 5, name: 'Casino Row', briefing: 'Getaway drive through Casino Row. Three stars, roadblocks on the avenues.',
     steps: [
-      { kind: 'enter-car', label: 'Get in the getaway car', x: 50, z: -350, r: 8 },
-      { kind: 'drive-to', label: 'Outrun the chase to Hillcrest', x: 450, z: -250, r: 12, wanted: 3 },
-      { kind: 'lose-wanted', label: 'Lose the wanted level', x: 450, z: -250, r: 20 },
+      { kind: 'enter-car', label: 'Get in the getaway car', x: 50, z: -403, r: 8 },
+      { kind: 'drive-to', label: 'Outrun the chase to Hillcrest', x: 400, z: -250, r: 12, wanted: 3 },
+      { kind: 'lose-wanted', label: 'Lose the wanted level', x: 400, z: -250, r: 20 },
     ],
     payout: 700, respect: 10,
   },
   {
     id: 6, name: 'The Informant', briefing: 'A witness is hiding on a rooftop in Hillcrest. Rival crew is coming up the stairs.',
     steps: [
-      { kind: 'goto', label: 'Climb to the rooftop', x: 350, z: -150, r: 6 },
-      { kind: 'combat', label: 'Protect the witness — stop the crew (4)', x: 350, z: -150, r: 16, foes: 4 },
+      { kind: 'goto', label: 'Climb to the rooftop', x: 350, z: -120, r: 6 },
+      { kind: 'combat', label: 'Protect the witness — stop the crew (4)', x: 350, z: -120, r: 16, foes: 4 },
       { kind: 'goto', label: 'Walk the witness to safety', x: 250, z: -50, r: 8 },
     ],
     payout: 900, respect: 12,
@@ -153,18 +153,18 @@ export const MISSIONS = [
   {
     id: 7, name: 'Air One', briefing: 'Four stars and a helicopter over the docks. Lose it in the warehouse tunnels.',
     steps: [
-      { kind: 'enter-car', label: 'Take the dock car', x: -420, z: 250, r: 8 },
-      { kind: 'drive-to', label: 'Reach the dock tunnels with the helicopter on you', x: -480, z: 420, r: 12, wanted: 4 },
-      { kind: 'lose-wanted', label: 'Break the helicopter\'s line of sight', x: -480, z: 420, r: 20 },
+      { kind: 'enter-car', label: 'Take the dock car', x: -403, z: 250, r: 8 },
+      { kind: 'drive-to', label: 'Reach the dock tunnels with the helicopter on you', x: -400, z: 420, r: 12, wanted: 4 },
+      { kind: 'lose-wanted', label: 'Break the helicopter\'s line of sight', x: -400, z: 420, r: 20 },
     ],
     payout: 1200, respect: 12,
   },
   {
     id: 8, name: 'The Last Causeway', briefing: 'The final job: five stars, helicopter and roadblocks. Drive the score across the causeway.',
     steps: [
-      { kind: 'enter-car', label: 'Take the score car', x: -250, z: 250, r: 8 },
-      { kind: 'drive-to', label: 'Cross the causeway bridge', x: 480, z: 560, r: 14, wanted: 5 },
-      { kind: 'drive-to', label: 'Bring the score home to the garage', x: -350, z: -350, r: 12 },
+      { kind: 'enter-car', label: 'Take the score car', x: -250, z: 200, r: 8 },
+      { kind: 'drive-to', label: 'Cross the causeway bridge', x: 450, z: 560, r: 14, wanted: 5 },
+      { kind: 'drive-to', label: 'Bring the score home to the garage', x: -350, z: -328, r: 12 },
     ],
     payout: 5000, respect: 25, needsRespect: 40,
   },
@@ -179,9 +179,9 @@ export const SIDE_JOBS = {
   deliveryPayout: 180,
 };
 
-export const GARAGE_POS = { x: -350, z: -350 };
-export const SAFEHOUSE_POS = { x: -250, z: -450 };
-export const CHOP_SHOP_POS = { x: -420, z: 180 };
+export const GARAGE_POS = { x: -350, z: -328 }; // forecourt, in front of the garage doors
+export const SAFEHOUSE_POS = { x: -250, z: -428 }; // forecourt, south of the safehouse
+export const CHOP_SHOP_POS = { x: -420, z: 205 }; // yard, south of the chop shop
 export const POLICE_STATION_POS = { x: 150, z: -450 };
 
 export const UPGRADES = [

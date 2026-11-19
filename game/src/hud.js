@@ -32,6 +32,7 @@ export function createHud(doc) {
     garageList: el('garage-list'),
   };
   let toastTimer = 0;
+  let missionTimer = 0;
 
   function showToast(msg) {
     if (!hud.toast) return;
@@ -96,7 +97,7 @@ export function createHud(doc) {
       hud.missionTitle.textContent = title;
       hud.missionBrief.textContent = brief;
       hud.missionCard.classList.add('show');
-      setTimeout(() => hud.missionCard.classList.remove('show'), 5200);
+      missionTimer = 5.2; // fades on sim time, never the wall clock
     },
     showTitle(hasSave) {
       if (hud.titleScreen) hud.titleScreen.style.display = 'flex';
@@ -133,6 +134,10 @@ export function createHud(doc) {
       if (toastTimer > 0) {
         toastTimer -= dt;
         if (toastTimer <= 0 && hud.toast) hud.toast.classList.remove('show');
+      }
+      if (missionTimer > 0) {
+        missionTimer -= dt;
+        if (missionTimer <= 0 && hud.missionCard) hud.missionCard.classList.remove('show');
       }
     },
   };
